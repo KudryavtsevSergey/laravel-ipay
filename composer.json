@@ -1,0 +1,30 @@
+{
+    "name": "sun/ipay",
+    "description": "Ipay erip payment module",
+    "authors": [
+        {
+            "name": "Kudryavtsev Sergey",
+            "email": "invaderman@mail.ru"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
+        "psr-4": {
+            "Sun\\IPay\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Sun\\IPay\\IPayServiceProvider"
+            ],
+            "aliases": {
+                "IPay": "Sun\\IPay\\Facade"
+            }
+        }
+    }
+}
