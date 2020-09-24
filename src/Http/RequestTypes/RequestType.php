@@ -8,10 +8,7 @@ use Sun\IPay\Services\IPayServiceContract;
 
 abstract class RequestType
 {
-    /**
-     * @var IPayServiceContract
-     */
-    protected $iPayService;
+    protected IPayServiceContract $iPayService;
 
     public function __construct(IPayServiceContract $iPayService)
     {

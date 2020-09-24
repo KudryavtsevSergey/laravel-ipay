@@ -6,10 +6,7 @@ use Illuminate\Contracts\Routing\Registrar as Router;
 
 class RouteRegistrar
 {
-    /**
-     * @var Router
-     */
-    protected $router;
+    protected Router $router;
 
     public function __construct(Router $router)
     {

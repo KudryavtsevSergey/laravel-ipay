@@ -4,9 +4,17 @@ namespace Sun\IPay\Http\Responses\Errors;
 
 class PaymentInProcessErrorResponse extends ErrorResponse
 {
+    private int $orderId;
+
     public function __construct(int $orderId)
     {
-        //TODO: localize
-        parent::__construct("Заказ номер {$orderId} находится в процессе оплаты.");
+        parent::__construct();
+        $this->orderId = $orderId;
+    }
+
+    protected function getErrorMessage(): string
+    {
+        // TODO: localize
+        return sprintf('Заказ номер %s находится в процессе оплаты.', $this->orderId)
     }
 }

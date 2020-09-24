@@ -7,25 +7,10 @@ use DOMElement;
 
 class ServiceInfoResponse extends IPayResponse
 {
-    /**
-     * @var int
-     */
-    private $orderId;
-
-    /**
-     * @var float
-     */
-    private $amount;
-
-    /**
-     * @var string
-     */
-    private $surname;
-
-    /**
-     * @var string
-     */
-    private $name;
+    private int $orderId;
+    private float $amount;
+    private string $surname;
+    private string $name;
 
     public function __construct(int $orderId, float $amount, string $surname, string $name)
     {

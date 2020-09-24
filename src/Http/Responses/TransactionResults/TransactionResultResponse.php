@@ -7,10 +7,7 @@ use Sun\IPay\Http\Responses\IPayResponse;
 
 abstract class TransactionResultResponse extends IPayResponse
 {
-    /**
-     * @var string
-     */
-    private $message;
+    private string $message;
 
     public function __construct(string $message)
     {

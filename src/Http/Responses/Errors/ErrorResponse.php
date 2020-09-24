@@ -6,17 +6,6 @@ use Sun\IPay\Http\Responses\IPayResponse;
 
 abstract class ErrorResponse extends IPayResponse
 {
-    /**
-     * @var string
-     */
-    private $message;
-
-    public function __construct(string $message)
-    {
-        parent::__construct();
-        $this->message = $message;
-    }
-
     protected function response()
     {
         $this->serviceProviderNode->appendChild($this->createErrorNode());
@@ -26,9 +15,11 @@ abstract class ErrorResponse extends IPayResponse
     {
         $errorNode = $this->doc->createElement("Error");
         $errorLineNode = $this->doc->createElement("ErrorLine");
-        $errorLineNode->appendChild($this->doc->createTextNode($this->message));
+        $errorLineNode->appendChild($this->doc->createTextNode($this->getErrorMessage()));
         $errorNode->appendChild($errorLineNode);
 
         return $errorNode;
     }
+
+    protected abstract function getErrorMessage(): string;
 }

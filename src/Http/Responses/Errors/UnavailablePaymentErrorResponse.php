@@ -4,9 +4,17 @@ namespace Sun\IPay\Http\Responses\Errors;
 
 class UnavailablePaymentErrorResponse extends ErrorResponse
 {
+    private int $orderId;
+
     public function __construct(int $orderId)
     {
-        //TODO: localize
-        parent::__construct("Заказ {$orderId} недоступен для оплаты.");
+        parent::__construct();
+        $this->orderId = $orderId;
+    }
+
+    protected function getErrorMessage(): string
+    {
+        // TODO: localize
+        return sprintf('Заказ %s недоступен для оплаты.', $this->orderId)
     }
 }

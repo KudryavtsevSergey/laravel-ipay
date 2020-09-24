@@ -7,10 +7,6 @@ use Route;
 
 class IPay
 {
-    /**
-     * @param array $options
-     * @return void
-     */
     public static function routes(array $options = [])
     {
         $defaultOptions = ['prefix' => 'ipay', 'namespace' => '\Sun\IPay\Http\Controllers'];

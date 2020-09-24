@@ -6,10 +6,7 @@ use DOMElement;
 
 class TransactionStartResponse extends IPayResponse
 {
-    /**
-     * @var int
-     */
-    private $orderId;
+    private int $orderId;
 
     public function __construct(int $orderId)
     {

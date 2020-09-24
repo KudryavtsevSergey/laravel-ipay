@@ -4,19 +4,12 @@ namespace Sun\IPay\Http\Responses;
 
 use DOMDocument;
 use DOMElement;
-use Sun\IPay\Helpers\Helper;
+use Sun\IPay\IPayConfig;
 
 abstract class IPayResponse implements IPayResponseContract
 {
-    /**
-     * @var DOMDocument
-     */
-    protected $doc;
-
-    /**
-     * @var DOMElement
-     */
-    protected $serviceProviderNode;
+    protected DOMDocument $doc;
+    protected DOMElement $serviceProviderNode;
 
     public function __construct()
     {
@@ -33,7 +26,7 @@ abstract class IPayResponse implements IPayResponseContract
 
         $xml = trim($this->doc->saveXML());
 
-        $md5 = (new Helper())->getXmlSignature($xml);
+        $md5 = IPayConfig::getXmlSignature($xml);
 
         return response($xml)
             ->setCharset('windows-1251')
@@ -43,7 +36,7 @@ abstract class IPayResponse implements IPayResponseContract
 
     private function createServiceProviderNode(): DOMElement
     {
-        return $this->doc->createElement("ServiceProvider_Response");
+        return $this->doc->createElement('ServiceProvider_Response');
     }
 
     private function createDoc(): DOMDocument
@@ -58,7 +51,7 @@ abstract class IPayResponse implements IPayResponseContract
      * @param string|array $messages
      * @return DOMElement
      */
-    protected function createInfoNode($messages)
+    protected function createInfoNode($messages): DOMElement
     {
         $messages = is_string($messages) ? func_get_args() : $messages;
 

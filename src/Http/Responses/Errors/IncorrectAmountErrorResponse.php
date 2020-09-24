@@ -4,9 +4,9 @@ namespace Sun\IPay\Http\Responses\Errors;
 
 class IncorrectAmountErrorResponse extends ErrorResponse
 {
-    public function __construct()
+    protected function getErrorMessage(): string
     {
-        //TODO: localize
-        parent::__construct("Неверно указана сумма.");
+        // TODO: localize
+        return 'Неверно указана сумма.';
     }
 }

@@ -3,7 +3,7 @@
 namespace Sun\IPay\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use Sun\IPay\Helpers\Helper;
+use Sun\IPay\IPayConfig;
 
 class SignatureRule implements Rule
 {
@@ -17,7 +17,7 @@ class SignatureRule implements Rule
     public function passes($attribute, $xml)
     {
         $actualSignature = $this->getHttpSignature();
-        $expectedSignature = (new Helper())->getXmlSignature($xml);
+        $expectedSignature = IPayConfig::getXmlSignature($xml);
 
         return strcasecmp($expectedSignature, $actualSignature) == 0;
     }
@@ -31,11 +31,6 @@ class SignatureRule implements Rule
         return '';
     }
 
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
     public function message()
     {
         //TODO: return error xml response
