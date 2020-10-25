@@ -7,34 +7,33 @@ use Sun\IPay\IPayConfig;
 
 class SignatureRule implements Rule
 {
-    /**
-     * Determine if the validation rule passes.
-     *
-     * @param string $attribute
-     * @param mixed $xml
-     * @return bool
-     */
+    private IPayConfig $config;
+
+    public function __construct(IPayConfig $config)
+    {
+        $this->config = $config;
+    }
+
     public function passes($attribute, $xml)
     {
         $actualSignature = $this->getHttpSignature();
-        $expectedSignature = IPayConfig::getXmlSignature($xml);
+        $expectedSignature = $this->config->getXmlSignature($xml);
 
         return strcasecmp($expectedSignature, $actualSignature) == 0;
     }
 
-    private function getHttpSignature(): string
+    private function getHttpSignature(): ?string
     {
         if (preg_match('/SALT\+MD5:\s(.*)/', $_SERVER['HTTP_SERVICEPROVIDER_SIGNATURE'] ?? '', $matches)) {
             return $matches[1];
         }
 
-        return '';
+        return null;
     }
 
     public function message()
     {
-        //TODO: return error xml response
-        //TODO: localize
-        return 'The validation error message.';
+        // TODO: localize
+        return 'Сигнатура не совпадает.';
     }
 }

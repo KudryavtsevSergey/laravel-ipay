@@ -16,7 +16,7 @@ class IPayRequest extends FormRequest
     public function rules()
     {
         return [
-            'XML' => ['required', new SignatureRule()],
+            'XML' => ['required', new SignatureRule(new IPayConfig())],
         ];
     }
 }

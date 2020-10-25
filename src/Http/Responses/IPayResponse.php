@@ -2,69 +2,30 @@
 
 namespace Sun\IPay\Http\Responses;
 
-use DOMDocument;
-use DOMElement;
+use Illuminate\Contracts\Support\Responsable;
+use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 use Sun\IPay\IPayConfig;
+use Symfony\Component\HttpFoundation\Response;
 
-abstract class IPayResponse implements IPayResponseContract
+class IPayResponse implements Responsable
 {
-    protected DOMDocument $doc;
-    protected DOMElement $serviceProviderNode;
+    private IPayConfig $config;
+    private AbstractIPayXmlGenerator $generator;
 
-    public function __construct()
+    public function __construct(AbstractIPayXmlGenerator $generator, IPayConfig $config)
     {
-        $this->doc = $this->createDoc();
-        $this->serviceProviderNode = $this->createServiceProviderNode();
-        $this->doc->appendChild($this->serviceProviderNode);
+        $this->generator = $generator;
+        $this->config = $config;
     }
 
-    protected abstract function response();
-
-    public function get()
+    public function toResponse($request): Response
     {
-        $this->response();
-
-        $xml = trim($this->doc->saveXML());
-
-        $md5 = IPayConfig::getXmlSignature($xml);
+        $xml = $this->generator->generateResponse();
+        $md5 = $this->config->getXmlSignature($xml);
 
         return response($xml)
             ->setCharset('windows-1251')
             ->header('Content-Type', 'text/xml')
             ->header('ServiceProvider-Signature: SALT+MD5', $md5);
-    }
-
-    private function createServiceProviderNode(): DOMElement
-    {
-        return $this->doc->createElement('ServiceProvider_Response');
-    }
-
-    private function createDoc(): DOMDocument
-    {
-        $doc = new DOMDocument();
-        $doc->formatOutput = true;
-
-        return $doc;
-    }
-
-    /**
-     * @param string|array $messages
-     * @return DOMElement
-     */
-    protected function createInfoNode($messages): DOMElement
-    {
-        $messages = is_string($messages) ? func_get_args() : $messages;
-
-        $infoNode = $this->doc->createElement("Info");
-        $infoNode->setAttribute("xml:space", "preserve");
-
-        array_walk($messages, function (string $message) use ($infoNode) {
-            $infoLineNode = $this->doc->createElement("InfoLine");
-            $infoLineNode->appendChild($this->doc->createTextNode($message));
-
-            $infoNode->appendChild($infoLineNode);
-        });
-
-        return $infoNode;
     }
 }

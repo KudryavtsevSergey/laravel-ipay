@@ -3,8 +3,6 @@
 namespace Sun\IPay;
 
 use Illuminate\Support\ServiceProvider;
-use Sun\IPay\Services\IPayService;
-use Sun\IPay\Services\IPayServiceContract;
 
 class IPayServiceProvider extends ServiceProvider
 {
@@ -17,6 +15,6 @@ class IPayServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->bind(IPayServiceContract::class, IPayService::class);
+        $this->app->singleton(Facade::FACADE, IPay::class);
     }
 }

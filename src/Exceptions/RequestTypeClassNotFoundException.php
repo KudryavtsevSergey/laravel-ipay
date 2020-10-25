@@ -2,9 +2,9 @@
 
 namespace Sun\IPay\Exceptions;
 
-use Exception;
+use RuntimeException;
 
-class RequestTypeClassNotFoundException extends Exception
+class RequestTypeClassNotFoundException extends RuntimeException
 {
     public function __construct(string $className)
     {

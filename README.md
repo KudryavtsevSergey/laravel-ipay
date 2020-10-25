@@ -29,7 +29,6 @@ After updating composer, add the service provider to the ```providers``` array i
 And add alias:
 ```php
 [
-    // TODO:
     'IPay' => Sun\IPay\Facade::class,
 ];
 ```

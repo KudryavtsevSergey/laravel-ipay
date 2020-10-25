@@ -2,31 +2,29 @@
 
 namespace Sun\IPay\Http\RequestTypes;
 
-use SimpleXMLElement;
-use Sun\IPay\Http\Responses\IPayResponse;
-use Sun\IPay\Http\Responses\Errors\OrderNotFoundErrorResponse;
-use Sun\IPay\Http\Responses\ServiceInfoResponse;
-use Sun\IPay\Http\Responses\Errors\UnavailablePaymentErrorResponse;
+use Sun\IPay\Http\ResponseGenerators\Errors\OrderNotFoundErrorXmlGenerator;
+use Sun\IPay\Http\ResponseGenerators\Errors\UnavailablePaymentErrorXmlGenerator;
+use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
+use Sun\IPay\Http\ResponseGenerators\ServiceInfoXmlGenerator;
+use Sun\IPay\Models\ServiceInfoModel;
 
-class ServiceInfoRequestType extends RequestType
+class ServiceInfoRequestType extends AbstractRequestType
 {
-    public function generateResponse(SimpleXMLElement $xml): IPayResponse
+    public function generateResponse(array $data): AbstractIPayXmlGenerator
     {
-        $orderId = (int)$xml->PersonalAccount;
-
-        if (!$this->iPayService->orderExist($orderId)) {
-            return new OrderNotFoundErrorResponse($orderId);
+        $serviceInfo = ServiceInfoModel::createFromArray($data);
+        $orderChecker = $this->iPayService->getOrderChecker($serviceInfo);
+        if (!$orderChecker->isExist()) {
+            return new OrderNotFoundErrorXmlGenerator($serviceInfo);
         }
 
-        if (!$this->iPayService->orderAvailablePayment($orderId)) {
-            return new UnavailablePaymentErrorResponse($orderId);
+        if (!$orderChecker->isAvailablePay()) {
+            return new UnavailablePaymentErrorXmlGenerator($serviceInfo);
         }
 
-        $amount = $this->iPayService->calculateAmount($orderId);
+        $orderInfo = $this->iPayService->getOrderInfo($serviceInfo);
+        $amount = $this->iPayService->getPayAmount($serviceInfo);
 
-        $name = $this->iPayService->getPayerName($orderId);
-        $surname = $this->iPayService->getPayerSurname($orderId);
-
-        return new ServiceInfoResponse($orderId, $amount, $surname, $name);
+        return new ServiceInfoXmlGenerator($orderInfo, $amount);
     }
 }

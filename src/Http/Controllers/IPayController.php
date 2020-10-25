@@ -2,36 +2,46 @@
 
 namespace Sun\IPay\Http\Controllers;
 
-use SimpleXMLElement;
 use Sun\IPay\Exceptions\RequestTypeClassNotFoundException;
 use Sun\IPay\Http\Requests\IPayRequest;
-use Sun\IPay\Http\RequestTypes\RequestType;
-use Sun\IPay\Services\IPayServiceContract;
+use Sun\IPay\Http\RequestTypes\AbstractRequestType;
+use Sun\IPay\Http\Responses\IPayResponse;
+use Sun\IPay\IPayConfig;
+use Sun\IPay\Contracts\IPayServiceContract;
 
-class IPayController extends Controller
+class IPayController extends AbstractController
 {
-    /**
-     * @param IPayServiceContract $iPayService
-     * @param IPayRequest $request
-     * @return mixed
-     * @throws RequestTypeClassNotFoundException
-     */
-    public function index(IPayServiceContract $iPayService, IPayRequest $request)
+    private IPayServiceContract $iPayService;
+    private IPayConfig $config;
+
+    public function __construct(IPayServiceContract $iPayService, IPayConfig $config)
     {
-        $xml = $request->input('XML');
+        $this->iPayService = $iPayService;
+        $this->config = $config;
+    }
 
-        $xml = new SimpleXMLElement($xml);
+    public function index(IPayRequest $request): IPayResponse
+    {
+        $data = $this->getDataFromRequest($request);
+        $requestType = $data['RequestType'] ?? null;
 
-        $className = "Sun\\IPay\\Http\\RequestTypes\\{$xml->RequestType}RequestType";
+        $className = sprintf('Sun\\IPay\\Http\\RequestTypes\\%sRequestType', $requestType);
 
         if (!class_exists($className)) {
             throw new RequestTypeClassNotFoundException($className);
         }
+        unset($data['RequestType']);
 
-        /** @var RequestType $requestType */
-        $requestType = new $className($iPayService);
-        $iPayResponse = $requestType->generateResponse($xml);
+        /** @var AbstractRequestType $requestType */
+        $requestType = new $className($this->iPayService);
+        $generator = $requestType->generateResponse($data);
 
-        return $iPayResponse->get();
+        return new IPayResponse($generator, $this->config);
+    }
+
+    private function getDataFromRequest(IPayRequest $request): array
+    {
+        $xml = $request->input('XML');
+        return json_decode(json_encode((array)simplexml_load_string($xml)), true);
     }
 }
