@@ -15,6 +15,6 @@ class IPayServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->singleton(Facade::FACADE, IPay::class);
+        $this->app->singleton(Facade::FACADE_ACCESSOR, IPay::class);
     }
 }
