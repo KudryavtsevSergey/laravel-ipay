@@ -2,29 +2,29 @@
 
 namespace Sun\IPay\Http\RequestTypes;
 
+use Sun\IPay\Dto\RequestDto\ServiceInfoRequestDto;
+use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\OrderNotFoundErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\UnavailablePaymentErrorXmlGenerator;
-use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\ServiceInfoXmlGenerator;
-use Sun\IPay\Models\ServiceInfoModel;
 
 class ServiceInfoRequestType extends AbstractRequestType
 {
-    public function generateResponse(array $data): AbstractIPayXmlGenerator
+    public function processData(array $data): AbstractIPayXmlGenerator
     {
-        $serviceInfo = ServiceInfoModel::createFromArray($data);
-        $orderChecker = $this->iPayService->getOrderChecker($serviceInfo);
+        /** @var ServiceInfoRequestDto $request */
+        $request = $this->arrayObjectMapper->deserialize($data, ServiceInfoRequestDto::class);
+        $orderChecker = $this->iPayService->getOrderChecker($request);
         if (!$orderChecker->isExist()) {
-            return new OrderNotFoundErrorXmlGenerator($serviceInfo);
+            return new OrderNotFoundErrorXmlGenerator($request);
         }
 
         if (!$orderChecker->isAvailablePay()) {
-            return new UnavailablePaymentErrorXmlGenerator($serviceInfo);
+            return new UnavailablePaymentErrorXmlGenerator($request);
         }
 
-        $orderInfo = $this->iPayService->getOrderInfo($serviceInfo);
-        $amount = $this->iPayService->getPayAmount($serviceInfo);
+        $orderInfo = $this->iPayService->getOrderInfo($request);
 
-        return new ServiceInfoXmlGenerator($orderInfo, $amount);
+        return new ServiceInfoXmlGenerator($orderInfo);
     }
 }

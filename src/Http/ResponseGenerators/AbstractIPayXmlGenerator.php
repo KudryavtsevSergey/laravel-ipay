@@ -17,7 +17,7 @@ abstract class AbstractIPayXmlGenerator
         $this->doc->appendChild($this->serviceProviderNode);
     }
 
-    protected abstract function generateXml();
+    protected abstract function generateXml(): void;
 
     public function generateResponse(): string
     {

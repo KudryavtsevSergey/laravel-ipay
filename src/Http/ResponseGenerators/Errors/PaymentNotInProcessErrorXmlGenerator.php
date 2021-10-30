@@ -2,13 +2,13 @@
 
 namespace Sun\IPay\Http\ResponseGenerators\Errors;
 
-use Sun\IPay\Models\AbstractRequest;
+use Sun\IPay\Dto\RequestDto\BaseRequestDto;
 
 class PaymentNotInProcessErrorXmlGenerator extends AbstractErrorXmlGenerator
 {
-    private AbstractRequest $request;
+    private BaseRequestDto $request;
 
-    public function __construct(AbstractRequest $request)
+    public function __construct(BaseRequestDto $request)
     {
         parent::__construct();
         $this->request = $request;
@@ -16,7 +16,6 @@ class PaymentNotInProcessErrorXmlGenerator extends AbstractErrorXmlGenerator
 
     protected function getErrorMessage(): string
     {
-        // TODO: localize
-        return sprintf('Заказ номер %s не находится в процессе оплаты.', $this->request->getPersonalAccount());
+        return __('ipay::messages.payment_not_in_process', ['order_id' => $this->request->getPersonalAccount()]);
     }
 }

@@ -6,7 +6,6 @@ class IncorrectCurrencyErrorXmlGenerator extends AbstractErrorXmlGenerator
 {
     protected function getErrorMessage(): string
     {
-        // TODO: localize
-        return 'Неверно указана валюта.';
+        return __('ipay::messages.wrong_currency');
     }
 }

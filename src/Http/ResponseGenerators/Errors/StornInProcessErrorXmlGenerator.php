@@ -2,13 +2,13 @@
 
 namespace Sun\IPay\Http\ResponseGenerators\Errors;
 
-use Sun\IPay\Models\AbstractRequest;
+use Sun\IPay\Dto\RequestDto\BaseRequestDto;
 
 class StornInProcessErrorXmlGenerator extends AbstractErrorXmlGenerator
 {
-    private AbstractRequest $request;
+    private BaseRequestDto $request;
 
-    public function __construct(AbstractRequest $request)
+    public function __construct(BaseRequestDto $request)
     {
         parent::__construct();
         $this->request = $request;
@@ -16,7 +16,6 @@ class StornInProcessErrorXmlGenerator extends AbstractErrorXmlGenerator
 
     protected function getErrorMessage(): string
     {
-        // TODO: localize
-        return sprintf('Заказ номер %s находится в процессе сторнирования.', $this->request->getPersonalAccount());
+        return __('ipay::messages.storn_in_process', ['order_id' => $this->request->getPersonalAccount()]);
     }
 }

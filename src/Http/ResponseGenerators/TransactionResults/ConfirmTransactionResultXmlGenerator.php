@@ -6,7 +6,6 @@ class ConfirmTransactionResultXmlGenerator extends AbstractTransactionResultXmlG
 {
     public function __construct()
     {
-        //TODO: localize
-        parent::__construct('Спасибо за покупку!');
+        parent::__construct(__('ipay::messages.thanks'));
     }
 }

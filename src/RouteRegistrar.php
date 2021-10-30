@@ -3,7 +3,7 @@
 namespace Sun\IPay;
 
 use Illuminate\Contracts\Routing\Registrar as Router;
-use Sun\IPay\Http\Middleware\SafeWrapper;
+use Sun\IPay\Http\Controllers\IPayController;
 
 class RouteRegistrar
 {
@@ -14,13 +14,11 @@ class RouteRegistrar
         $this->router = $router;
     }
 
-    public function routes()
+    public function routes(): void
     {
-        $this->router->group(['middleware' => SafeWrapper::class], function (Router $router) {
-            $router->post('', [
-                'uses' => 'IPayController@index',
-                'as' => 'ipay.index',
-            ]);
-        });
+        $this->router->post('', [
+            'uses' => 'IPayController@index',
+            'as' => IPayController::ROUTE_NAME,
+        ]);
     }
 }

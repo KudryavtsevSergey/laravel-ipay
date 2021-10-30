@@ -6,7 +6,6 @@ class CancelTransactionResultXmlGenerator extends AbstractTransactionResultXmlGe
 {
     public function __construct()
     {
-        //TODO: localize
-        parent::__construct('Операция отменена.');
+        parent::__construct(__('ipay::messages.operation_cancelled'));
     }
 }

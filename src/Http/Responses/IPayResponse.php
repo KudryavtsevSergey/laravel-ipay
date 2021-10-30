@@ -4,28 +4,28 @@ namespace Sun\IPay\Http\Responses;
 
 use Illuminate\Contracts\Support\Responsable;
 use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
-use Sun\IPay\IPayConfig;
+use Sun\IPay\Service\SignatureService;
 use Symfony\Component\HttpFoundation\Response;
 
 class IPayResponse implements Responsable
 {
-    private IPayConfig $config;
     private AbstractIPayXmlGenerator $generator;
+    private SignatureService $signatureService;
 
-    public function __construct(AbstractIPayXmlGenerator $generator, IPayConfig $config)
+    public function __construct(AbstractIPayXmlGenerator $generator, SignatureService $signatureService)
     {
         $this->generator = $generator;
-        $this->config = $config;
+        $this->signatureService = $signatureService;
     }
 
     public function toResponse($request): Response
     {
         $xml = $this->generator->generateResponse();
-        $md5 = $this->config->getXmlSignature($xml);
+        $signature = $this->signatureService->generate($xml);
 
         return response($xml)
             ->setCharset('windows-1251')
             ->header('Content-Type', 'text/xml')
-            ->header('ServiceProvider-Signature: SALT+MD5', $md5);
+            ->header('ServiceProvider-Signature: SALT+MD5', $signature);
     }
 }

@@ -15,7 +15,7 @@ abstract class AbstractTransactionResultXmlGenerator extends AbstractIPayXmlGene
         $this->message = $message;
     }
 
-    protected function generateXml()
+    protected function generateXml(): void
     {
         $this->serviceProviderNode->appendChild($this->createTransactionResultNode());
     }

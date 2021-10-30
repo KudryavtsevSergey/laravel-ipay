@@ -3,19 +3,19 @@
 namespace Sun\IPay\Http\ResponseGenerators;
 
 use DOMElement;
-use Sun\IPay\Models\TransactionStart;
+use Sun\IPay\Dto\RequestDto\TransactionStartRequestDto;
 
 class TransactionStartXmlGenerator extends AbstractIPayXmlGenerator
 {
-    private TransactionStart $transactionStart;
+    private TransactionStartRequestDto $transactionStart;
 
-    public function __construct(TransactionStart $transactionStart)
+    public function __construct(TransactionStartRequestDto $transactionStart)
     {
         parent::__construct();
         $this->transactionStart = $transactionStart;
     }
 
-    protected function generateXml()
+    protected function generateXml(): void
     {
         $this->serviceProviderNode->appendChild($this->createTransactionStartNode());
     }
@@ -25,9 +25,8 @@ class TransactionStartXmlGenerator extends AbstractIPayXmlGenerator
         $transactionStartNode = $this->doc->createElement('TransactionStart');
 
         $transactionStartNode->appendChild($this->createServiceProviderTrxIdNode());
-        //TODO: localize
-        $message = sprintf('Номер заказа: %s', $this->transactionStart->getPersonalAccount());
-        $transactionStartNode->appendChild($this->createInfoNode($message, 'Пополнение счета'));
+        $message = __('ipay::messages.order_number', ['order_id' => $this->transactionStart->getPersonalAccount()]);
+        $transactionStartNode->appendChild($this->createInfoNode($message, __('ipay::messages.refill')));
 
         return $transactionStartNode;
     }

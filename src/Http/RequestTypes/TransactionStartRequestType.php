@@ -2,43 +2,45 @@
 
 namespace Sun\IPay\Http\RequestTypes;
 
+use Sun\IPay\Dto\RequestDto\TransactionStartRequestDto;
+use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\IncorrectAmountErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\IncorrectCurrencyErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\OrderNotFoundErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\PaymentInProcessErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\UnavailablePaymentErrorXmlGenerator;
-use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\TransactionStartXmlGenerator;
-use Sun\IPay\Models\TransactionStartModel;
 
 class TransactionStartRequestType extends AbstractRequestType
 {
-    public function generateResponse(array $data): AbstractIPayXmlGenerator
+    public function processData(array $data): AbstractIPayXmlGenerator
     {
-        $transactionStart = TransactionStartModel::createFromArray($data);
-        $orderChecker = $this->iPayService->getOrderChecker($transactionStart);
+        /** @var TransactionStartRequestDto $request */
+        $request = $this->arrayObjectMapper->deserialize($data, TransactionStartRequestDto::class);
+        $orderChecker = $this->iPayService->getOrderChecker($request);
         if (!$orderChecker->isExist()) {
-            return new OrderNotFoundErrorXmlGenerator($transactionStart);
+            return new OrderNotFoundErrorXmlGenerator($request);
         }
 
         if (!$orderChecker->isAvailablePay()) {
-            return new UnavailablePaymentErrorXmlGenerator($transactionStart);
+            return new UnavailablePaymentErrorXmlGenerator($request);
         }
 
-        $amount = $this->iPayService->getPayAmount($transactionStart);
+        $orderInfo = $this->iPayService->getOrderInfo($request);
+        $amount = $orderInfo->calculateAmount();
 
-        if ($amount->getAmount() != $transactionStart->getFormattedAmount()) {
+        if ($amount->getAmount() !== $request->getTransactionStart()->getAmount()) {
             return new IncorrectAmountErrorXmlGenerator();
         }
 
-        if ($amount->getIPayCurrency() != $transactionStart->getCurrency()) {
+        if ($amount->getIPayCurrency() !== $request->getCurrency()) {
             return new IncorrectCurrencyErrorXmlGenerator();
         }
 
-        if (!$this->iPayService->lockPayOrder($transactionStart)) {
-            return new PaymentInProcessErrorXmlGenerator($transactionStart);
+        if (!$this->iPayService->lockPayOrder($request)) {
+            return new PaymentInProcessErrorXmlGenerator($request);
         }
 
-        return new TransactionStartXmlGenerator($transactionStart);
+        return new TransactionStartXmlGenerator($request);
     }
 }

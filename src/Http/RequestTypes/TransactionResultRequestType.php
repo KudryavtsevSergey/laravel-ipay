@@ -2,37 +2,38 @@
 
 namespace Sun\IPay\Http\RequestTypes;
 
+use Sun\IPay\Dto\RequestDto\TransactionResultRequestDto;
+use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\OrderNotFoundErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\PaymentNotInProcessErrorXmlGenerator;
-use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\UnavailablePaymentErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\TransactionResults\CancelTransactionResultXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\TransactionResults\ConfirmTransactionResultXmlGenerator;
-use Sun\IPay\Models\TransactionResultModel;
 
 class TransactionResultRequestType extends AbstractRequestType
 {
-    public function generateResponse(array $data): AbstractIPayXmlGenerator
+    public function processData(array $data): AbstractIPayXmlGenerator
     {
-        $transactionResult = TransactionResultModel::createFromArray($data);
-        $orderChecker = $this->iPayService->getOrderChecker($transactionResult);
+        /** @var TransactionResultRequestDto $request */
+        $request = $this->arrayObjectMapper->deserialize($data, TransactionResultRequestDto::class);
+        $orderChecker = $this->iPayService->getOrderChecker($request);
         if (!$orderChecker->isExist()) {
-            return new OrderNotFoundErrorXmlGenerator($transactionResult);
+            return new OrderNotFoundErrorXmlGenerator($request);
         }
 
         if (!$orderChecker->isAvailablePay()) {
-            return new UnavailablePaymentErrorXmlGenerator($transactionResult);
+            return new UnavailablePaymentErrorXmlGenerator($request);
         }
 
-        if (!$this->iPayService->unlockPayOrder($transactionResult)) {
-            return new PaymentNotInProcessErrorXmlGenerator($transactionResult);
+        if (!$this->iPayService->unlockPayOrder($request)) {
+            return new PaymentNotInProcessErrorXmlGenerator($request);
         }
 
-        if (!empty($transactionResult->getErrorText())) {
+        if (!empty($request->getTransactionResult()->getErrorText())) {
             return new CancelTransactionResultXmlGenerator();
         }
 
-        $this->iPayService->payOrder($transactionResult);
+        $this->iPayService->payOrder($request);
 
         return new ConfirmTransactionResultXmlGenerator();
     }

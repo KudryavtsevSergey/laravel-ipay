@@ -2,36 +2,42 @@
 
 namespace Sun\IPay\Http\RequestTypes;
 
+use Sun\IPay\Dto\RequestDto\StornStartRequestDto;
 use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\IncorrectAmountErrorXmlGenerator;
+use Sun\IPay\Http\ResponseGenerators\Errors\IncorrectCurrencyErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\OrderNotFoundErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\StornInProcessErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\UnavailableStornErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\StornXmlGenerator;
-use Sun\IPay\Models\StornStartModel;
 
 class StornStartRequestType extends AbstractRequestType
 {
-    public function generateResponse(array $data): AbstractIPayXmlGenerator
+    public function processData(array $data): AbstractIPayXmlGenerator
     {
-        $stornStart = StornStartModel::createFromArray($data);
-        $orderChecker = $this->iPayService->getOrderChecker($stornStart);
+        /** @var StornStartRequestDto $request */
+        $request = $this->arrayObjectMapper->deserialize($data, StornStartRequestDto::class);
+        $orderChecker = $this->iPayService->getOrderChecker($request);
         if (!$orderChecker->isExist()) {
-            return new OrderNotFoundErrorXmlGenerator($stornStart);
+            return new OrderNotFoundErrorXmlGenerator($request);
         }
 
         if (!$orderChecker->isAvailableStorn()) {
-            return new UnavailableStornErrorXmlGenerator($stornStart);
+            return new UnavailableStornErrorXmlGenerator($request);
         }
 
-        $amount = $this->iPayService->getStornAmount($stornStart);
+        $amount = $this->iPayService->getStornAmount($request);
 
-        if ($amount != $stornStart->getFormattedAmount()) {
+        if ($amount->getAmount() !== $request->getStornStart()->getAmount()) {
             return new IncorrectAmountErrorXmlGenerator();
         }
 
-        if (!$this->iPayService->lockStornOrder($stornStart)) {
-            return new StornInProcessErrorXmlGenerator($stornStart);
+        if ($amount->getIPayCurrency() !== $request->getCurrency()) {
+            return new IncorrectCurrencyErrorXmlGenerator();
+        }
+
+        if (!$this->iPayService->lockStornOrder($request)) {
+            return new StornInProcessErrorXmlGenerator($request);
         }
 
         return new StornXmlGenerator();

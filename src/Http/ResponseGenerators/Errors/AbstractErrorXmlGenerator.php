@@ -6,7 +6,7 @@ use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 
 abstract class AbstractErrorXmlGenerator extends AbstractIPayXmlGenerator
 {
-    protected function generateXml()
+    protected function generateXml(): void
     {
         $this->serviceProviderNode->appendChild($this->createErrorNode());
     }

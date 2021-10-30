@@ -6,7 +6,6 @@ class IncorrectAmountErrorXmlGenerator extends AbstractErrorXmlGenerator
 {
     protected function getErrorMessage(): string
     {
-        // TODO: localize
-        return 'Неверно указана сумма заказа.';
+        return __('ipay::messages.incorrect_amount');
     }
 }

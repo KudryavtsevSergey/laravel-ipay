@@ -7,13 +7,13 @@ use Route;
 
 class IPay
 {
-    public function routes(array $options = [])
+    public function routes(array $options = []): void
     {
         $defaultOptions = ['prefix' => 'ipay', 'namespace' => '\Sun\IPay\Http\Controllers'];
 
         $options = array_merge($defaultOptions, $options);
 
-        Route::group($options, function (Router $router) {
+        Route::group($options, function (Router $router): void {
             (new RouteRegistrar($router))->routes();
         });
     }

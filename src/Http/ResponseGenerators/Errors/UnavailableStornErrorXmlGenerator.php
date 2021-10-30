@@ -2,13 +2,13 @@
 
 namespace Sun\IPay\Http\ResponseGenerators\Errors;
 
-use Sun\IPay\Models\AbstractRequest;
+use Sun\IPay\Dto\RequestDto\BaseRequestDto;
 
 class UnavailableStornErrorXmlGenerator extends AbstractErrorXmlGenerator
 {
-    private AbstractRequest $request;
+    private BaseRequestDto $request;
 
-    public function __construct(AbstractRequest $request)
+    public function __construct(BaseRequestDto $request)
     {
         parent::__construct();
         $this->request = $request;
@@ -16,7 +16,6 @@ class UnavailableStornErrorXmlGenerator extends AbstractErrorXmlGenerator
 
     protected function getErrorMessage(): string
     {
-        // TODO: localize
-        return sprintf('Заказ %s недоступен для отмены.', $this->request->getPersonalAccount());
+        return __('ipay::messages.unavailable_storn', ['order_id' => $this->request->getPersonalAccount()]);
     }
 }

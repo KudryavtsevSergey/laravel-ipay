@@ -3,22 +3,19 @@
 namespace Sun\IPay\Http\ResponseGenerators;
 
 use DOMElement;
-use Sun\IPay\Contracts\IPayAmountContract;
 use Sun\IPay\Contracts\IPayOrderInfoContract;
 
 class ServiceInfoXmlGenerator extends AbstractIPayXmlGenerator
 {
     private IPayOrderInfoContract $orderInfo;
-    private IPayAmountContract $amount;
 
-    public function __construct(IPayOrderInfoContract $orderInfo, IPayAmountContract $amount)
+    public function __construct(IPayOrderInfoContract $orderInfo)
     {
         parent::__construct();
         $this->orderInfo = $orderInfo;
-        $this->amount = $amount;
     }
 
-    protected function generateXml()
+    protected function generateXml(): void
     {
         $this->serviceProviderNode->appendChild($this->createServiceInfoNode());
     }
@@ -50,7 +47,7 @@ class ServiceInfoXmlGenerator extends AbstractIPayXmlGenerator
     private function createAmountNode(): DOMElement
     {
         $amountNode = $this->doc->createElement('Amount');
-        $debtNode = $this->createDebtNode($this->amount->getAmount());
+        $debtNode = $this->createDebtNode($this->orderInfo->calculateAmount()->getAmount());
 
         $amountNode->appendChild($debtNode);
 
@@ -63,9 +60,8 @@ class ServiceInfoXmlGenerator extends AbstractIPayXmlGenerator
 
         $serviceInfoNode->appendChild($this->createAmountNode());
         $serviceInfoNode->appendChild($this->createNameNode());
-        //TODO: localize
-        $message = sprintf('Номер заказа: %s', $this->orderInfo->getOrderId());
-        $serviceInfoNode->appendChild($this->createInfoNode($message, 'Пополнение счета'));
+        $message = __('ipay::messages.order_number', ['order_id' => $this->orderInfo->getOrderId()]);
+        $serviceInfoNode->appendChild($this->createInfoNode($message, __('ipay::messages.refill')));
 
         return $serviceInfoNode;
     }

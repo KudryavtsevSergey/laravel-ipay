@@ -6,7 +6,6 @@ class InternalErrorXmlGenerator extends AbstractErrorXmlGenerator
 {
     protected function getErrorMessage(): string
     {
-        // TODO: localize
-        return 'Внутренняя ошибка.';
+        return __('ipay::messages.internal_error');
     }
 }
