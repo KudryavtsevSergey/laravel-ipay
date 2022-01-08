@@ -3,7 +3,7 @@
 namespace Sun\IPay\Http\RequestTypes;
 
 use Sun\IPay\Contracts\IPayServiceContract;
-use Sun\IPay\Exceptions\RequestTypeClassNotFoundException;
+use Sun\IPay\Enum\RequestTypeEnum;
 use Sun\IPay\Mapper\ArrayObjectMapper;
 
 class RequestTypeFactory
@@ -21,13 +21,19 @@ class RequestTypeFactory
 
     public function createRequestType(string $requestType): AbstractRequestType
     {
-        $className = sprintf('Sun\\IPay\\Http\\RequestTypes\\%sRequestType', $requestType);
-
-        if (!class_exists($className)) {
-            throw new RequestTypeClassNotFoundException($className);
+        switch ($requestType) {
+            case RequestTypeEnum::SERVICE_INFO:
+                return new ServiceInfoRequestType($this->iPayService, $this->arrayObjectMapper);
+            case RequestTypeEnum::TRANSACTION_START:
+                return new TransactionStartRequestType($this->iPayService, $this->arrayObjectMapper);
+            case RequestTypeEnum::TRANSACTION_RESULT:
+                return new TransactionResultRequestType($this->iPayService, $this->arrayObjectMapper);
+            case RequestTypeEnum::STORN_START:
+                return new StornStartRequestType($this->iPayService, $this->arrayObjectMapper);
+            case RequestTypeEnum::STORN_RESULT:
+                return new StornResultRequestType($this->iPayService, $this->arrayObjectMapper);
+            default:
+                throw RequestTypeEnum::invalidValue($requestType);
         }
-
-        return new $className($this->iPayService, $this->arrayObjectMapper);
-
     }
 }

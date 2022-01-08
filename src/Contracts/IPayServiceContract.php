@@ -2,29 +2,67 @@
 
 namespace Sun\IPay\Contracts;
 
-use Sun\IPay\Dto\RequestDto\BaseRequestDto;
+use Sun\IPay\Dto\RequestDto\ServiceInfoRequestDto;
 use Sun\IPay\Dto\RequestDto\StornResultRequestDto;
 use Sun\IPay\Dto\RequestDto\StornStartRequestDto;
 use Sun\IPay\Dto\RequestDto\TransactionResultRequestDto;
 use Sun\IPay\Dto\RequestDto\TransactionStartRequestDto;
+use Sun\IPay\Exceptions\Order\InvalidPaymentAmountException;
+use Sun\IPay\Exceptions\Order\InvalidPaymentCurrencyException;
+use Sun\IPay\Exceptions\Order\OrderNotAvailableForPaymentException;
+use Sun\IPay\Exceptions\Order\OrderNotAvailableForStornException;
+use Sun\IPay\Exceptions\Order\OrderNotFoundException;
+use Sun\IPay\Exceptions\Order\PaymentInProcessException;
+use Sun\IPay\Exceptions\Order\PaymentNotInProcessException;
+use Sun\IPay\Exceptions\Order\StornNotInProcessException;
 
 interface IPayServiceContract
 {
-    public function getOrderChecker(BaseRequestDto $request): IPayOrderCheckerContract;
+    /**
+     * @param ServiceInfoRequestDto $request
+     * @return IPayOrderInfoContract
+     * @throws OrderNotFoundException
+     * @throws OrderNotAvailableForPaymentException
+     */
+    public function getOrderInfo(ServiceInfoRequestDto $request): IPayOrderInfoContract;
 
-    public function getOrderInfo(BaseRequestDto $request): IPayOrderInfoContract;
+    /**
+     * @param TransactionStartRequestDto $request
+     * @return IPayTransactionContract
+     * @throws InvalidPaymentAmountException
+     * @throws InvalidPaymentCurrencyException
+     * @throws OrderNotFoundException
+     * @throws OrderNotAvailableForPaymentException
+     * @throws PaymentInProcessException
+     */
+    public function startPayment(TransactionStartRequestDto $request): IPayTransactionContract;
 
-    public function lockPayOrder(TransactionStartRequestDto $transactionStart): bool;
+    /**
+     * @param TransactionResultRequestDto $request
+     * @return void
+     * @throws OrderNotFoundException
+     * @throws OrderNotAvailableForPaymentException
+     * @throws PaymentNotInProcessException
+     */
+    public function registerPayment(TransactionResultRequestDto $request): void;
 
-    public function unlockPayOrder(TransactionResultRequestDto $transactionResult): bool;
+    /**
+     * @param StornStartRequestDto $request
+     * @return void
+     * @throws InvalidPaymentAmountException
+     * @throws OrderNotFoundException
+     * @throws OrderNotAvailableForStornException
+     * @throws StornNotInProcessException
+     */
+    public function startStorn(StornStartRequestDto $request): void;
 
-    public function payOrder(TransactionResultRequestDto $transactionResult): void;
-
-    public function getStornAmount(StornStartRequestDto $stornStart): IPayAmountContract;
-
-    public function lockStornOrder(StornStartRequestDto $stornStart): bool;
-
-    public function unlockStornOrder(StornResultRequestDto $stornResult): bool;
-
-    public function stornOrder(StornResultRequestDto $stornResult): bool;
+    /**
+     * @param StornResultRequestDto $request
+     * @return void
+     * @throws InvalidPaymentAmountException
+     * @throws OrderNotFoundException
+     * @throws OrderNotAvailableForStornException
+     * @throws StornNotInProcessException
+     */
+    public function registerStorn(StornResultRequestDto $request): void;
 }

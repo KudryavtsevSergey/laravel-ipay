@@ -3,6 +3,9 @@
 namespace Sun\IPay\Http\RequestTypes;
 
 use Sun\IPay\Dto\RequestDto\TransactionResultRequestDto;
+use Sun\IPay\Exceptions\Order\OrderNotAvailableForPaymentException;
+use Sun\IPay\Exceptions\Order\OrderNotFoundException;
+use Sun\IPay\Exceptions\Order\PaymentNotInProcessException;
 use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\OrderNotFoundErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\PaymentNotInProcessErrorXmlGenerator;
@@ -16,25 +19,19 @@ class TransactionResultRequestType extends AbstractRequestType
     {
         /** @var TransactionResultRequestDto $request */
         $request = $this->arrayObjectMapper->deserialize($data, TransactionResultRequestDto::class);
-        $orderChecker = $this->iPayService->getOrderChecker($request);
-        if (!$orderChecker->isExist()) {
-            return new OrderNotFoundErrorXmlGenerator($request);
-        }
 
-        if (!$orderChecker->isAvailablePay()) {
+        try {
+            $this->iPayService->registerPayment($request);
+            if (!empty($request->getTransactionResult()->getErrorText())) {
+                return new CancelTransactionResultXmlGenerator();
+            }
+            return new ConfirmTransactionResultXmlGenerator();
+        } catch (OrderNotAvailableForPaymentException $e) {
             return new UnavailablePaymentErrorXmlGenerator($request);
-        }
-
-        if (!$this->iPayService->unlockPayOrder($request)) {
+        } catch (OrderNotFoundException $e) {
+            return new OrderNotFoundErrorXmlGenerator($request);
+        } catch (PaymentNotInProcessException $e) {
             return new PaymentNotInProcessErrorXmlGenerator($request);
         }
-
-        if (!empty($request->getTransactionResult()->getErrorText())) {
-            return new CancelTransactionResultXmlGenerator();
-        }
-
-        $this->iPayService->payOrder($request);
-
-        return new ConfirmTransactionResultXmlGenerator();
     }
 }

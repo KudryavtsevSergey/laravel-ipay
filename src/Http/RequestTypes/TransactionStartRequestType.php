@@ -3,6 +3,11 @@
 namespace Sun\IPay\Http\RequestTypes;
 
 use Sun\IPay\Dto\RequestDto\TransactionStartRequestDto;
+use Sun\IPay\Exceptions\Order\InvalidPaymentAmountException;
+use Sun\IPay\Exceptions\Order\InvalidPaymentCurrencyException;
+use Sun\IPay\Exceptions\Order\OrderNotAvailableForPaymentException;
+use Sun\IPay\Exceptions\Order\OrderNotFoundException;
+use Sun\IPay\Exceptions\Order\PaymentInProcessException;
 use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\IncorrectAmountErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\IncorrectCurrencyErrorXmlGenerator;
@@ -17,30 +22,20 @@ class TransactionStartRequestType extends AbstractRequestType
     {
         /** @var TransactionStartRequestDto $request */
         $request = $this->arrayObjectMapper->deserialize($data, TransactionStartRequestDto::class);
-        $orderChecker = $this->iPayService->getOrderChecker($request);
-        if (!$orderChecker->isExist()) {
-            return new OrderNotFoundErrorXmlGenerator($request);
-        }
 
-        if (!$orderChecker->isAvailablePay()) {
-            return new UnavailablePaymentErrorXmlGenerator($request);
-        }
-
-        $orderInfo = $this->iPayService->getOrderInfo($request);
-        $amount = $orderInfo->calculateAmount();
-
-        if ($amount->getAmount() !== $request->getTransactionStart()->getAmount()) {
+        try {
+            $transaction = $this->iPayService->startPayment($request);
+            return new TransactionStartXmlGenerator($request, $transaction->getTransactionId());
+        } catch (InvalidPaymentAmountException $e) {
             return new IncorrectAmountErrorXmlGenerator();
-        }
-
-        if ($amount->getIPayCurrency() !== $request->getCurrency()) {
+        } catch (InvalidPaymentCurrencyException $e) {
             return new IncorrectCurrencyErrorXmlGenerator();
-        }
-
-        if (!$this->iPayService->lockPayOrder($request)) {
+        } catch (OrderNotAvailableForPaymentException $e) {
+            return new UnavailablePaymentErrorXmlGenerator($request);
+        } catch (OrderNotFoundException $e) {
+            return new OrderNotFoundErrorXmlGenerator($request);
+        } catch (PaymentInProcessException $e) {
             return new PaymentInProcessErrorXmlGenerator($request);
         }
-
-        return new TransactionStartXmlGenerator($request);
     }
 }

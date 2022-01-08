@@ -3,7 +3,12 @@
 namespace Sun\IPay\Http\RequestTypes;
 
 use Sun\IPay\Dto\RequestDto\StornResultRequestDto;
+use Sun\IPay\Exceptions\Order\InvalidPaymentAmountException;
+use Sun\IPay\Exceptions\Order\OrderNotAvailableForStornException;
+use Sun\IPay\Exceptions\Order\OrderNotFoundException;
+use Sun\IPay\Exceptions\Order\StornNotInProcessException;
 use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
+use Sun\IPay\Http\ResponseGenerators\Errors\IncorrectAmountErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\OrderNotFoundErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\StornNotInProcessErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\UnavailableStornErrorXmlGenerator;
@@ -15,21 +20,18 @@ class StornResultRequestType extends AbstractRequestType
     {
         /** @var StornResultRequestDto $request */
         $request = $this->arrayObjectMapper->deserialize($data, StornResultRequestDto::class);
-        $orderChecker = $this->iPayService->getOrderChecker($request);
-        if (!$orderChecker->isExist()) {
-            return new OrderNotFoundErrorXmlGenerator($request);
-        }
 
-        if (!$orderChecker->isAvailableStorn()) {
+        try {
+            $this->iPayService->registerStorn($request);
+            return new StornXmlGenerator();
+        } catch (InvalidPaymentAmountException $e) {
+            return new IncorrectAmountErrorXmlGenerator();
+        } catch (OrderNotAvailableForStornException $e) {
             return new UnavailableStornErrorXmlGenerator($request);
-        }
-
-        if (!$this->iPayService->unlockStornOrder($request)) {
+        } catch (OrderNotFoundException $e) {
+            return new OrderNotFoundErrorXmlGenerator($request);
+        } catch (StornNotInProcessException $e) {
             return new StornNotInProcessErrorXmlGenerator($request);
         }
-
-        $this->iPayService->stornOrder($request);
-
-        return new StornXmlGenerator();
     }
 }

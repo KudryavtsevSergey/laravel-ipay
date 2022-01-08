@@ -3,6 +3,8 @@
 namespace Sun\IPay\Http\RequestTypes;
 
 use Sun\IPay\Dto\RequestDto\ServiceInfoRequestDto;
+use Sun\IPay\Exceptions\Order\OrderNotAvailableForPaymentException;
+use Sun\IPay\Exceptions\Order\OrderNotFoundException;
 use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\OrderNotFoundErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\UnavailablePaymentErrorXmlGenerator;
@@ -14,17 +16,14 @@ class ServiceInfoRequestType extends AbstractRequestType
     {
         /** @var ServiceInfoRequestDto $request */
         $request = $this->arrayObjectMapper->deserialize($data, ServiceInfoRequestDto::class);
-        $orderChecker = $this->iPayService->getOrderChecker($request);
-        if (!$orderChecker->isExist()) {
+
+        try {
+            $orderInfo = $this->iPayService->getOrderInfo($request);
+            return new ServiceInfoXmlGenerator($orderInfo);
+        } catch (OrderNotAvailableForPaymentException $e) {
+            return new UnavailablePaymentErrorXmlGenerator($request);
+        } catch (OrderNotFoundException $e) {
             return new OrderNotFoundErrorXmlGenerator($request);
         }
-
-        if (!$orderChecker->isAvailablePay()) {
-            return new UnavailablePaymentErrorXmlGenerator($request);
-        }
-
-        $orderInfo = $this->iPayService->getOrderInfo($request);
-
-        return new ServiceInfoXmlGenerator($orderInfo);
     }
 }

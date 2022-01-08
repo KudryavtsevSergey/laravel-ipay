@@ -8,11 +8,13 @@ use Sun\IPay\Dto\RequestDto\TransactionStartRequestDto;
 class TransactionStartXmlGenerator extends AbstractIPayXmlGenerator
 {
     private TransactionStartRequestDto $transactionStart;
+    private string $transactionId;
 
-    public function __construct(TransactionStartRequestDto $transactionStart)
+    public function __construct(TransactionStartRequestDto $transactionStart, string $transactionId)
     {
         parent::__construct();
         $this->transactionStart = $transactionStart;
+        $this->transactionId = $transactionId;
     }
 
     protected function generateXml(): void
@@ -34,7 +36,7 @@ class TransactionStartXmlGenerator extends AbstractIPayXmlGenerator
     private function createServiceProviderTrxIdNode(): DOMElement
     {
         $serviceProviderTrxIdNode = $this->doc->createElement('ServiceProvider_TrxId');
-        $serviceProviderTrxIdNode->appendChild($this->doc->createTextNode($this->transactionStart->getPersonalAccount()));
+        $serviceProviderTrxIdNode->appendChild($this->doc->createTextNode($this->transactionId));
 
         return $serviceProviderTrxIdNode;
     }

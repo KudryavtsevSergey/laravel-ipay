@@ -3,9 +3,12 @@
 namespace Sun\IPay\Http\RequestTypes;
 
 use Sun\IPay\Dto\RequestDto\StornStartRequestDto;
+use Sun\IPay\Exceptions\Order\InvalidPaymentAmountException;
+use Sun\IPay\Exceptions\Order\OrderNotAvailableForStornException;
+use Sun\IPay\Exceptions\Order\OrderNotFoundException;
+use Sun\IPay\Exceptions\Order\StornNotInProcessException;
 use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\IncorrectAmountErrorXmlGenerator;
-use Sun\IPay\Http\ResponseGenerators\Errors\IncorrectCurrencyErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\OrderNotFoundErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\StornInProcessErrorXmlGenerator;
 use Sun\IPay\Http\ResponseGenerators\Errors\UnavailableStornErrorXmlGenerator;
@@ -17,29 +20,18 @@ class StornStartRequestType extends AbstractRequestType
     {
         /** @var StornStartRequestDto $request */
         $request = $this->arrayObjectMapper->deserialize($data, StornStartRequestDto::class);
-        $orderChecker = $this->iPayService->getOrderChecker($request);
-        if (!$orderChecker->isExist()) {
-            return new OrderNotFoundErrorXmlGenerator($request);
-        }
 
-        if (!$orderChecker->isAvailableStorn()) {
-            return new UnavailableStornErrorXmlGenerator($request);
-        }
-
-        $amount = $this->iPayService->getStornAmount($request);
-
-        if ($amount->getAmount() !== $request->getStornStart()->getAmount()) {
+        try {
+            $this->iPayService->startStorn($request);
+            return new StornXmlGenerator();
+        } catch (InvalidPaymentAmountException $e) {
             return new IncorrectAmountErrorXmlGenerator();
-        }
-
-        if ($amount->getIPayCurrency() !== $request->getCurrency()) {
-            return new IncorrectCurrencyErrorXmlGenerator();
-        }
-
-        if (!$this->iPayService->lockStornOrder($request)) {
+        } catch (OrderNotAvailableForStornException $e) {
+            return new UnavailableStornErrorXmlGenerator($request);
+        } catch (OrderNotFoundException $e) {
+            return new OrderNotFoundErrorXmlGenerator($request);
+        } catch (StornNotInProcessException $e) {
             return new StornInProcessErrorXmlGenerator($request);
         }
-
-        return new StornXmlGenerator();
     }
 }
