@@ -6,43 +6,13 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 class Address
 {
-    /**
-     * @SerializedName("City")
-     */
-    private ?string $city;
-
-    /**
-     * @SerializedName("Street")
-     */
-    private ?string $street;
-
-    /**
-     * @SerializedName("House")
-     */
-    private ?string $house;
-
-    /**
-     * @SerializedName("Building")
-     */
-    private ?string $building;
-
-    /**
-     * @SerializedName("Apartment")
-     */
-    private ?string $apartment;
-
     public function __construct(
-        ?string $city = null,
-        ?string $street = null,
-        ?string $house = null,
-        ?string $building = null,
-        ?string $apartment
+        #[SerializedName('City')] private ?string $city = null,
+        #[SerializedName('Street')] private ?string $street = null,
+        #[SerializedName('House')] private ?string $house = null,
+        #[SerializedName('Building')] private ?string $building = null,
+        #[SerializedName('Apartment')] private ?string $apartment = null,
     ) {
-        $this->city = $city;
-        $this->street = $street;
-        $this->house = $house;
-        $this->building = $building;
-        $this->apartment = $apartment;
     }
 
     public function getCity(): ?string

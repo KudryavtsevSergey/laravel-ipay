@@ -2,6 +2,7 @@
 
 namespace Sun\IPay\Http\ResponseGenerators\Errors;
 
+use DOMElement;
 use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 
 abstract class AbstractErrorXmlGenerator extends AbstractIPayXmlGenerator
@@ -11,7 +12,7 @@ abstract class AbstractErrorXmlGenerator extends AbstractIPayXmlGenerator
         $this->serviceProviderNode->appendChild($this->createErrorNode());
     }
 
-    private function createErrorNode()
+    private function createErrorNode(): DOMElement
     {
         $errorNode = $this->doc->createElement('Error');
         $errorLineNode = $this->doc->createElement('ErrorLine');

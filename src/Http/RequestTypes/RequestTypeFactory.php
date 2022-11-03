@@ -8,15 +8,10 @@ use Sun\IPay\Mapper\ArrayObjectMapper;
 
 class RequestTypeFactory
 {
-    private IPayServiceContract $iPayService;
-    private ArrayObjectMapper $arrayObjectMapper;
-
     public function __construct(
-        IPayServiceContract $iPayService,
-        ArrayObjectMapper $arrayObjectMapper
+        private IPayServiceContract $iPayService,
+        private ArrayObjectMapper $arrayObjectMapper,
     ) {
-        $this->iPayService = $iPayService;
-        $this->arrayObjectMapper = $arrayObjectMapper;
     }
 
     public function createRequestType(string $requestType): AbstractRequestType

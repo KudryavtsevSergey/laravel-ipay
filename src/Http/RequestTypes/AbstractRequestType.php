@@ -8,13 +8,10 @@ use Sun\IPay\Mapper\ArrayObjectMapper;
 
 abstract class AbstractRequestType
 {
-    protected IPayServiceContract $iPayService;
-    protected ArrayObjectMapper $arrayObjectMapper;
-
-    public function __construct(IPayServiceContract $iPayService, ArrayObjectMapper $arrayObjectMapper)
-    {
-        $this->iPayService = $iPayService;
-        $this->arrayObjectMapper = $arrayObjectMapper;
+    public function __construct(
+        protected IPayServiceContract $iPayService,
+        protected ArrayObjectMapper $arrayObjectMapper,
+    ) {
     }
 
     public abstract function processData(array $data): AbstractIPayXmlGenerator;

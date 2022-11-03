@@ -7,12 +7,10 @@ use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;
 
 abstract class AbstractTransactionResultXmlGenerator extends AbstractIPayXmlGenerator
 {
-    private string $message;
-
-    public function __construct(string $message)
-    {
+    public function __construct(
+        private string $message,
+    ) {
         parent::__construct();
-        $this->message = $message;
     }
 
     protected function generateXml(): void

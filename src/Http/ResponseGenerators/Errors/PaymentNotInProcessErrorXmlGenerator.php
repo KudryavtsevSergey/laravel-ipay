@@ -6,12 +6,10 @@ use Sun\IPay\Dto\RequestDto\BaseRequestDto;
 
 class PaymentNotInProcessErrorXmlGenerator extends AbstractErrorXmlGenerator
 {
-    private BaseRequestDto $request;
-
-    public function __construct(BaseRequestDto $request)
-    {
+    public function __construct(
+        private BaseRequestDto $request,
+    ) {
         parent::__construct();
-        $this->request = $request;
     }
 
     protected function getErrorMessage(): string

@@ -25,21 +25,12 @@ class IPayController extends AbstractController
     private const SIGNATURE_HEADER_KEY = 'ServiceProvider-Signature';
     private const XML_REQUEST_KEY = 'XML';
 
-    private IPayServiceContract $iPayService;
-    private SignatureService $signatureService;
-    private ArrayObjectMapper $arrayObjectMapper;
-    private RequestTypeFactory $requestTypeFactory;
-
     public function __construct(
-        IPayServiceContract $iPayService,
-        SignatureService $signatureService,
-        ArrayObjectMapper $arrayObjectMapper,
-        RequestTypeFactory $requestTypeFactory
+        private IPayServiceContract $iPayService,
+        private SignatureService $signatureService,
+        private ArrayObjectMapper $arrayObjectMapper,
+        private RequestTypeFactory $requestTypeFactory,
     ) {
-        $this->iPayService = $iPayService;
-        $this->signatureService = $signatureService;
-        $this->arrayObjectMapper = $arrayObjectMapper;
-        $this->requestTypeFactory = $requestTypeFactory;
     }
 
     public function index(Request $request): Response

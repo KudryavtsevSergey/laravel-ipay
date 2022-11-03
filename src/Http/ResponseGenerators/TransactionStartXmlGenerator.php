@@ -7,14 +7,11 @@ use Sun\IPay\Dto\RequestDto\TransactionStartRequestDto;
 
 class TransactionStartXmlGenerator extends AbstractIPayXmlGenerator
 {
-    private TransactionStartRequestDto $transactionStart;
-    private string $transactionId;
-
-    public function __construct(TransactionStartRequestDto $transactionStart, string $transactionId)
-    {
+    public function __construct(
+        private TransactionStartRequestDto $transactionStart,
+        private string $transactionId,
+    ) {
         parent::__construct();
-        $this->transactionStart = $transactionStart;
-        $this->transactionId = $transactionId;
     }
 
     protected function generateXml(): void

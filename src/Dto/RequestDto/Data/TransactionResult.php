@@ -6,26 +6,11 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 class TransactionResult
 {
-    /**
-     * @SerializedName("TransactionId")
-     */
-    private int $transactionId;
-
-    /**
-     * @SerializedName("ServiceProvider_TrxId")
-     */
-    private string $serviceProviderTrxId;
-
-    /**
-     * @SerializedName("ErrorText")
-     */
-    private ?string $errorText;
-
-    public function __construct(int $transactionId, string $serviceProviderTrxId, ?string $errorText = null)
-    {
-        $this->transactionId = $transactionId;
-        $this->serviceProviderTrxId = $serviceProviderTrxId;
-        $this->errorText = $errorText;
+    public function __construct(
+        #[SerializedName('TransactionId')] private int $transactionId,
+        #[SerializedName('ServiceProvider_TrxId')] private string $serviceProviderTrxId,
+        #[SerializedName('ErrorText')] private ?string $errorText = null,
+    ) {
     }
 
     public function getTransactionId(): int

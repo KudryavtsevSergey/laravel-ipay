@@ -2,28 +2,15 @@
 
 namespace Sun\IPay\Dto\RequestDto\Data;
 
+use Symfony\Component\Serializer\Annotation\SerializedName;
+
 class Name
 {
-    /**
-     * @SerializedName("Surname")
-     */
-    private ?string $surname;
-
-    /**
-     * @SerializedName("FirstName")
-     */
-    private ?string $firstName;
-
-    /**
-     * @SerializedName("Patronymic")
-     */
-    private ?string $patronymic;
-
-    public function __construct(?string $surname = null, ?string $firstName = null, ?string $patronymic = null)
-    {
-        $this->surname = $surname;
-        $this->firstName = $firstName;
-        $this->patronymic = $patronymic;
+    public function __construct(
+        #[SerializedName('Surname')] private ?string $surname = null,
+        #[SerializedName('FirstName')] private ?string $firstName = null,
+        #[SerializedName('Patronymic')] private ?string $patronymic = null,
+    ) {
     }
 
     public function getSurname(): ?string

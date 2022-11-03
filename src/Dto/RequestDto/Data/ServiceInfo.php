@@ -6,14 +6,9 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 class ServiceInfo
 {
-    /**
-     * @SerializedName("Agent")
-     */
-    private int $agent;
-
-    public function __construct(int $agent)
-    {
-        $this->agent = $agent;
+    public function __construct(
+        #[SerializedName('Agent')] private int $agent,
+    ) {
     }
 
     public function getAgent(): int

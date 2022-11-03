@@ -9,13 +9,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IPayResponse implements Responsable
 {
-    private AbstractIPayXmlGenerator $generator;
-    private SignatureService $signatureService;
-
-    public function __construct(AbstractIPayXmlGenerator $generator, SignatureService $signatureService)
-    {
-        $this->generator = $generator;
-        $this->signatureService = $signatureService;
+    public function __construct(
+        private AbstractIPayXmlGenerator $generator,
+        private SignatureService $signatureService,
+    ) {
     }
 
     public function toResponse($request): Response

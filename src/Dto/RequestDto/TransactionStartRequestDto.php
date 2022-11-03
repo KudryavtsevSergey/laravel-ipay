@@ -8,20 +8,15 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 class TransactionStartRequestDto extends BaseRequestDto
 {
-    /**
-     * @SerializedName("TransactionStart")
-     */
-    private TransactionStart $transactionStart;
-
     public function __construct(
-        TransactionStart $transactionStart,
+        #[SerializedName('TransactionStart')] private TransactionStart $transactionStart,
         string $requestType,
         DateTimeInterface $dateTime,
         string $personalAccount,
         int $currency,
         int $requestId,
         ?int $serviceNo = null,
-        ?string $language = null
+        ?string $language = null,
     ) {
         parent::__construct(
             $requestType,
@@ -32,7 +27,6 @@ class TransactionStartRequestDto extends BaseRequestDto
             $serviceNo,
             $language
         );
-        $this->transactionStart = $transactionStart;
     }
 
     public function getTransactionStart(): TransactionStart

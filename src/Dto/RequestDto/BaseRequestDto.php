@@ -9,59 +9,17 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 class BaseRequestDto implements RequestDtoInterface
 {
-    /**
-     * @SerializedName("RequestType")
-     */
-    private string $requestType;
-
-    /**
-     * @SerializedName("DateTime")
-     */
-    private DateTimeInterface $dateTime;
-
-    /**
-     * @SerializedName("PersonalAccount")
-     */
-    private string $personalAccount;
-
-    /**
-     * @SerializedName("Currency")
-     */
-    private int $currency;
-
-    /**
-     * @SerializedName("RequestId")
-     */
-    private int $requestId;
-
-    /**
-     * @SerializedName("ServiceNo")
-     */
-    private ?int $serviceNo;
-
-    /**
-     * @SerializedName("Language")
-     */
-    private ?string $language;
-
     public function __construct(
-        string $requestType,
-        DateTimeInterface $dateTime,
-        string $personalAccount,
-        int $currency,
-        int $requestId,
-        ?int $serviceNo = null,
-        ?string $language = null
+        #[SerializedName('RequestType')] private string $requestType,
+        #[SerializedName('DateTime')] private DateTimeInterface $dateTime,
+        #[SerializedName('PersonalAccount')] private string $personalAccount,
+        #[SerializedName('Currency')] private int $currency,
+        #[SerializedName('RequestId')] private int $requestId,
+        #[SerializedName('ServiceNo')] private ?int $serviceNo = null,
+        #[SerializedName('Language')] private ?string $language = null,
     ) {
         IPayCurrencyEnum::checkAllowedValue($currency);
         LanguageEnum::checkAllowedValue($language, true);
-        $this->requestType = $requestType;
-        $this->dateTime = $dateTime;
-        $this->personalAccount = $personalAccount;
-        $this->currency = $currency;
-        $this->requestId = $requestId;
-        $this->serviceNo = $serviceNo;
-        $this->language = $language;
     }
 
     public function getRequestType(): string

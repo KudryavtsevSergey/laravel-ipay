@@ -6,20 +6,20 @@ use Sun\IPay\Exceptions\InvalidValueException;
 
 trait MapperTrait
 {
-    public static function map($field, $default = null)
+    public static function map(mixed $field, $default = null): mixed
     {
         $fields = static::fieldsMap();
         return self::mapFromFields($field, $fields, $default);
     }
 
-    public static function flipMap($field, $default = null)
+    public static function flipMap(mixed $field, $default = null): mixed
     {
         $fields = static::fieldsMap();
         $fields = array_flip($fields);
         return self::mapFromFields($field, $fields, $default);
     }
 
-    private static function mapFromFields($field, array $fields, $default = null)
+    private static function mapFromFields(mixed $field, array $fields, $default = null): mixed
     {
         if (is_null($default)) {
             self::check($field, $fields);
@@ -28,10 +28,10 @@ trait MapperTrait
         return $fields[$field] ?? $default;
     }
 
-    private static function check($field, array $fields): void
+    private static function check(mixed $field, array $fields): void
     {
         $allowedValues = array_keys($fields);
-        if (!in_array($field, $allowedValues)) {
+        if (!in_array($field, $allowedValues, true)) {
             throw new InvalidValueException($field, $allowedValues);
         }
     }

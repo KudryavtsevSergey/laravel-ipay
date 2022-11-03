@@ -8,20 +8,15 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 class StornResultRequestDto extends BaseRequestDto
 {
-    /**
-     * @SerializedName("StornResult")
-     */
-    private StornResult $stornResult;
-
     public function __construct(
-        StornResult $stornResult,
+        #[SerializedName('StornResult')] private StornResult $stornResult,
         string $requestType,
         DateTimeInterface $dateTime,
         string $personalAccount,
         int $currency,
         int $requestId,
         ?int $serviceNo = null,
-        ?string $language = null
+        ?string $language = null,
     ) {
         parent::__construct(
             $requestType,
@@ -32,7 +27,6 @@ class StornResultRequestDto extends BaseRequestDto
             $serviceNo,
             $language
         );
-        $this->stornResult = $stornResult;
     }
 
     public function getStornResult(): StornResult

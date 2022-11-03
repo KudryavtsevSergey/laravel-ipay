@@ -6,15 +6,13 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 class StornResult extends StornStart
 {
-    /**
-     * @SerializedName("Storned")
-     */
-    private bool $storned;
-
-    public function __construct(int $transactionId, string $serviceProviderTrxId, float $amount, bool $storned)
-    {
+    public function __construct(
+        int $transactionId,
+        string $serviceProviderTrxId,
+        float $amount,
+        #[SerializedName('Storned')] private bool $storned,
+    ) {
         parent::__construct($transactionId, $serviceProviderTrxId, $amount);
-        $this->storned = $storned;
     }
 
     public function isStorned(): bool

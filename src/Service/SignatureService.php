@@ -6,11 +6,9 @@ use Sun\IPay\IPayConfig;
 
 class SignatureService
 {
-    private IPayConfig $config;
-
-    public function __construct(IPayConfig $config)
-    {
-        $this->config = $config;
+    public function __construct(
+        private IPayConfig $config,
+    ) {
     }
 
     public function generate(string $xml): string
