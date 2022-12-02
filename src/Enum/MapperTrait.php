@@ -21,7 +21,7 @@ trait MapperTrait
 
     private static function mapFromFields(mixed $field, array $fields, $default = null): mixed
     {
-        if (is_null($default)) {
+        if ($default === null) {
             self::check($field, $fields);
         }
 
