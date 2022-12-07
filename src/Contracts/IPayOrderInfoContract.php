@@ -4,9 +4,9 @@ namespace Sun\IPay\Contracts;
 
 interface IPayOrderInfoContract
 {
-    public function getOrderId(): string;
+    public function getIPayOrderId(): string;
 
-    public function getPayer(): IPayPayerContract;
+    public function getIPayPayer(): IPayPayerContract;
 
-    public function calculateAmount(): IPayAmountContract;
+    public function calculateIPayAmount(): IPayAmountContract;
 }

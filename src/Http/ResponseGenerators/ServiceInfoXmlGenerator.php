@@ -20,7 +20,7 @@ class ServiceInfoXmlGenerator extends AbstractIPayXmlGenerator
 
     private function createNameNode(): DOMElement
     {
-        $payer = $this->orderInfo->getPayer();
+        $payer = $this->orderInfo->getIPayPayer();
 
         $surnameNode = $this->doc->createElement('Surname');
         $surnameNode->appendChild($this->doc->createTextNode($payer->getSurname()));
@@ -45,7 +45,7 @@ class ServiceInfoXmlGenerator extends AbstractIPayXmlGenerator
     private function createAmountNode(): DOMElement
     {
         $amountNode = $this->doc->createElement('Amount');
-        $debtNode = $this->createDebtNode($this->orderInfo->calculateAmount()->getAmount());
+        $debtNode = $this->createDebtNode($this->orderInfo->calculateIPayAmount()->getAmount());
 
         $amountNode->appendChild($debtNode);
 
@@ -58,7 +58,7 @@ class ServiceInfoXmlGenerator extends AbstractIPayXmlGenerator
 
         $serviceInfoNode->appendChild($this->createAmountNode());
         $serviceInfoNode->appendChild($this->createNameNode());
-        $message = __('ipay::messages.order_number', ['order_id' => $this->orderInfo->getOrderId()]);
+        $message = __('ipay::messages.order_number', ['order_id' => $this->orderInfo->getIPayOrderId()]);
         $serviceInfoNode->appendChild($this->createInfoNode($message, __('ipay::messages.refill')));
 
         return $serviceInfoNode;
