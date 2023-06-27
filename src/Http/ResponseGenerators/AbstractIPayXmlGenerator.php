@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay\Http\ResponseGenerators;
 
 use DOMDocument;
 use DOMElement;
+use Sun\IPay\Exceptions\InternalError;
 
 abstract class AbstractIPayXmlGenerator
 {
@@ -23,7 +26,7 @@ abstract class AbstractIPayXmlGenerator
     {
         $this->generateXml();
 
-        return trim($this->doc->saveXML());
+        return trim($this->doc->saveXML() ?: throw new InternalError('Error xml generation'));
     }
 
     private function createServiceProviderNode(): DOMElement

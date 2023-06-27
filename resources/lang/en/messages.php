@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'wrong_currency' => 'Invalid currency entered.',
     'incorrect_amount' => 'The order amount is incorrect.',

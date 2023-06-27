@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay\Mapper;
 
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;

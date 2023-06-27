@@ -1,11 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay;
+
+use Illuminate\Contracts\Config\Repository;
 
 class IPayConfig
 {
-    public function getSignature(): ?string
+    public function __construct(
+        private Repository $config,
+    ) {
+    }
+
+    public function getSignature(): string
     {
-        return config('ipay.signature');
+        return $this->config->get('ipay.signature');
     }
 }

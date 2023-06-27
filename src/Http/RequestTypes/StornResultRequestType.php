@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay\Http\RequestTypes;
 
 use Sun\IPay\Dto\RequestDto\StornResultRequestDto;
@@ -18,19 +20,18 @@ class StornResultRequestType extends AbstractRequestType
 {
     public function processData(array $data): AbstractIPayXmlGenerator
     {
-        /** @var StornResultRequestDto $request */
         $request = $this->arrayObjectMapper->deserialize($data, StornResultRequestDto::class);
 
         try {
             $this->iPayService->registerStorn($request);
             return new StornXmlGenerator();
-        } catch (InvalidPaymentAmountException $e) {
+        } catch (InvalidPaymentAmountException) {
             return new IncorrectAmountErrorXmlGenerator();
-        } catch (OrderNotAvailableForStornException $e) {
+        } catch (OrderNotAvailableForStornException) {
             return new UnavailableStornErrorXmlGenerator($request);
-        } catch (OrderNotFoundException $e) {
+        } catch (OrderNotFoundException) {
             return new OrderNotFoundErrorXmlGenerator($request);
-        } catch (StornNotInProcessException $e) {
+        } catch (StornNotInProcessException) {
             return new StornNotInProcessErrorXmlGenerator($request);
         }
     }

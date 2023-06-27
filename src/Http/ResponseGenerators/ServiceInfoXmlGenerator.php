@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay\Http\ResponseGenerators;
 
 use DOMElement;
@@ -45,7 +47,7 @@ class ServiceInfoXmlGenerator extends AbstractIPayXmlGenerator
     private function createAmountNode(): DOMElement
     {
         $amountNode = $this->doc->createElement('Amount');
-        $debtNode = $this->createDebtNode($this->orderInfo->calculateIPayAmount()->getAmount());
+        $debtNode = $this->createDebtNode((string)$this->orderInfo->calculateIPayAmount()->getAmount());
 
         $amountNode->appendChild($debtNode);
 

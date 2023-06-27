@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay\Http\Responses;
 
 use Illuminate\Contracts\Support\Responsable;
@@ -20,9 +22,9 @@ class IPayResponse implements Responsable
         $xml = $this->generator->generateResponse();
         $signature = $this->signatureService->generate($xml);
 
-        return response($xml)
-            ->setCharset('windows-1251')
-            ->header('Content-Type', 'text/xml')
-            ->header('ServiceProvider-Signature: SALT+MD5', $signature);
+        return (new Response($xml, headers: [
+            'Content-Type' => 'text/xml',
+            'ServiceProvider-Signature' => sprintf('SALT+MD5%s', $signature),
+        ]))->setCharset('windows-1251');
     }
 }

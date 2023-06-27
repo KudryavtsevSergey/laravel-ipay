@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay\Service;
 
 use Sun\IPay\IPayConfig;
@@ -17,7 +19,7 @@ class SignatureService
         return md5(sprintf('%s%s', $salt, $xml));
     }
 
-    public function verify(string $xml, ?string $signature): bool
+    public function verify(string $xml, string $signature): bool
     {
         $expected = $this->generate($xml);
 

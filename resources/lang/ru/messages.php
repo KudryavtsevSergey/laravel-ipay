@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'wrong_currency' => 'Неверно указана валюта.',
     'incorrect_amount' => 'Неверно указана сумма заказа.',

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay;
 
 use Illuminate\Support\Facades\Route;
@@ -19,7 +21,6 @@ class IPayServiceProvider extends ServiceProvider
         if (IPay::$registersRoutes) {
             Route::group([
                 'prefix' => config('ipay.path', 'ipay'),
-                'namespace' => '\Sun\IPay\Http\Controllers',
             ], function (): void {
                 $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
             });

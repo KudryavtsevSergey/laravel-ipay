@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay\Http\RequestTypes;
 
 use Sun\IPay\Dto\RequestDto\ServiceInfoRequestDto;
@@ -14,15 +16,14 @@ class ServiceInfoRequestType extends AbstractRequestType
 {
     public function processData(array $data): AbstractIPayXmlGenerator
     {
-        /** @var ServiceInfoRequestDto $request */
         $request = $this->arrayObjectMapper->deserialize($data, ServiceInfoRequestDto::class);
 
         try {
             $orderInfo = $this->iPayService->getOrderInfo($request);
             return new ServiceInfoXmlGenerator($orderInfo);
-        } catch (OrderNotAvailableForPaymentException $e) {
+        } catch (OrderNotAvailableForPaymentException) {
             return new UnavailablePaymentErrorXmlGenerator($request);
-        } catch (OrderNotFoundException $e) {
+        } catch (OrderNotFoundException) {
             return new OrderNotFoundErrorXmlGenerator($request);
         }
     }

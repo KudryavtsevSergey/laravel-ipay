@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay\Http\RequestTypes;
 
 use Sun\IPay\Dto\RequestDto\TransactionResultRequestDto;
@@ -17,7 +19,6 @@ class TransactionResultRequestType extends AbstractRequestType
 {
     public function processData(array $data): AbstractIPayXmlGenerator
     {
-        /** @var TransactionResultRequestDto $request */
         $request = $this->arrayObjectMapper->deserialize($data, TransactionResultRequestDto::class);
 
         try {
@@ -26,11 +27,11 @@ class TransactionResultRequestType extends AbstractRequestType
                 return new CancelTransactionResultXmlGenerator();
             }
             return new ConfirmTransactionResultXmlGenerator();
-        } catch (OrderNotAvailableForPaymentException $e) {
+        } catch (OrderNotAvailableForPaymentException) {
             return new UnavailablePaymentErrorXmlGenerator($request);
-        } catch (OrderNotFoundException $e) {
+        } catch (OrderNotFoundException) {
             return new OrderNotFoundErrorXmlGenerator($request);
-        } catch (PaymentNotInProcessException $e) {
+        } catch (PaymentNotInProcessException) {
             return new PaymentNotInProcessErrorXmlGenerator($request);
         }
     }

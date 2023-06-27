@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay\Mapper;
 
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -44,6 +46,12 @@ class ArrayObjectMapper
         $this->serializer = new Serializer($normalizers);
     }
 
+    /**
+     * @template T of RequestDtoInterface
+     * @param array $data
+     * @param class-string<T> $type
+     * @return T
+     */
     public function deserialize(array $data, string $type): RequestDtoInterface
     {
         try {

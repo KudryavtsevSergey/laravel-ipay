@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay\Http\RequestTypes;
 
 use Sun\IPay\Dto\RequestDto\TransactionStartRequestDto;
@@ -20,21 +22,20 @@ class TransactionStartRequestType extends AbstractRequestType
 {
     public function processData(array $data): AbstractIPayXmlGenerator
     {
-        /** @var TransactionStartRequestDto $request */
         $request = $this->arrayObjectMapper->deserialize($data, TransactionStartRequestDto::class);
 
         try {
             $transaction = $this->iPayService->startPayment($request);
             return new TransactionStartXmlGenerator($request, $transaction->getTransactionId());
-        } catch (InvalidPaymentAmountException $e) {
+        } catch (InvalidPaymentAmountException) {
             return new IncorrectAmountErrorXmlGenerator();
-        } catch (InvalidPaymentCurrencyException $e) {
+        } catch (InvalidPaymentCurrencyException) {
             return new IncorrectCurrencyErrorXmlGenerator();
-        } catch (OrderNotAvailableForPaymentException $e) {
+        } catch (OrderNotAvailableForPaymentException) {
             return new UnavailablePaymentErrorXmlGenerator($request);
-        } catch (OrderNotFoundException $e) {
+        } catch (OrderNotFoundException) {
             return new OrderNotFoundErrorXmlGenerator($request);
-        } catch (PaymentInProcessException $e) {
+        } catch (PaymentInProcessException) {
             return new PaymentInProcessErrorXmlGenerator($request);
         }
     }

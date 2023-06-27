@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay\Exceptions\Request;
 
 use Sun\IPay\Http\ResponseGenerators\AbstractIPayXmlGenerator;

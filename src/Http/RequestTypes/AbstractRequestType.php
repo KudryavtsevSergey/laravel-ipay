@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay\Http\RequestTypes;
 
 use Sun\IPay\Contracts\IPayServiceContract;

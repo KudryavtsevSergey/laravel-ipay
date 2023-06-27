@@ -1,28 +1,38 @@
 {
-    "name": "sun/ipay",
-    "description": "Ipay erip payment module",
-    "authors": [
-        {
-            "name": "Kudryavtsev Sergey",
-            "email": "invaderman@mail.ru"
-        }
-    ],
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "require": {},
-    "autoload": {
-        "psr-4": {
-            "Sun\\IPay\\": "src/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Sun\\IPay\\IPayServiceProvider"
-            ],
-            "aliases": {
-                "IPay": "Sun\\EpayAlfa\\IPay"
-            }
-        }
+  "name": "sun/ipay",
+  "description": "Ipay erip payment module",
+  "authors": [
+    {
+      "name": "Kudryavtsev Sergey",
+      "email": "invaderman@mail.ru"
     }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Sun\\IPay\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Sun\\IPay\\IPayServiceProvider"
+      ],
+      "aliases": {
+        "IPay": "Sun\\EpayAlfa\\IPay"
+      }
+    }
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.10",
+    "orchestra/testbench": "^8.5"
+  },
+  "require": {
+    "symfony/serializer": "^6.3",
+    "symfony/property-access": "^6.3",
+    "phpdocumentor/reflection-docblock": "^5.3",
+    "doctrine/annotations": "^2.0",
+    "ext-dom": "*"
+  }
 }

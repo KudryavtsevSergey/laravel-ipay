@@ -1,25 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sun\IPay\Enum;
 
 use Sun\IPay\Exceptions\InvalidValueException;
 
 trait MapperTrait
 {
-    public static function map(mixed $field, $default = null): mixed
+    public static function map(string|int|null $field, mixed $default = null): mixed
     {
         $fields = static::fieldsMap();
         return self::mapFromFields($field, $fields, $default);
     }
 
-    public static function flipMap(mixed $field, $default = null): mixed
+    public static function flipMap(string|int|null $field, mixed $default = null): mixed
     {
         $fields = static::fieldsMap();
         $fields = array_flip($fields);
         return self::mapFromFields($field, $fields, $default);
     }
 
-    private static function mapFromFields(mixed $field, array $fields, $default = null): mixed
+    private static function mapFromFields(string|int|null $field, array $fields, mixed $default = null): mixed
     {
         if ($default === null) {
             self::check($field, $fields);
@@ -28,7 +30,7 @@ trait MapperTrait
         return $fields[$field] ?? $default;
     }
 
-    private static function check(mixed $field, array $fields): void
+    private static function check(string|int|null $field, array $fields): void
     {
         $allowedValues = array_keys($fields);
         if (!in_array($field, $allowedValues, true)) {
