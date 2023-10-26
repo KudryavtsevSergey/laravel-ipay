@@ -9,7 +9,7 @@ use Sun\IPay\IPayConfig;
 class SignatureService
 {
     public function __construct(
-        private IPayConfig $config,
+        private readonly IPayConfig $config,
     ) {
     }
 

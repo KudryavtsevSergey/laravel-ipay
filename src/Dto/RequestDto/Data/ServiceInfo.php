@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class ServiceInfo
 {
     public function __construct(
-        #[SerializedName('Agent')] private int $agent,
+        #[SerializedName('Agent')] private readonly int $agent,
     ) {
     }
 

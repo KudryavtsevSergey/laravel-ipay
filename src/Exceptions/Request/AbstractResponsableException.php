@@ -16,7 +16,7 @@ abstract class AbstractResponsableException extends InternalError implements Res
 {
     public function __construct(
         string $message,
-        private SignatureService $signatureService,
+        private readonly SignatureService $signatureService,
         Throwable $previous = null
     ) {
         parent::__construct($message, $previous);

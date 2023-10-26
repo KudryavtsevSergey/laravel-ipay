@@ -12,8 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 class IPayResponse implements Responsable
 {
     public function __construct(
-        private AbstractIPayXmlGenerator $generator,
-        private SignatureService $signatureService,
+        private readonly AbstractIPayXmlGenerator $generator,
+        private readonly SignatureService $signatureService,
     ) {
     }
 

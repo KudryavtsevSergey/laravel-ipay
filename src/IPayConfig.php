@@ -9,7 +9,7 @@ use Illuminate\Contracts\Config\Repository;
 class IPayConfig
 {
     public function __construct(
-        private Repository $config,
+        private readonly Repository $config,
     ) {
     }
 

@@ -10,8 +10,8 @@ use Sun\IPay\Dto\RequestDto\TransactionStartRequestDto;
 class TransactionStartXmlGenerator extends AbstractIPayXmlGenerator
 {
     public function __construct(
-        private TransactionStartRequestDto $transactionStart,
-        private string $transactionId,
+        private readonly TransactionStartRequestDto $transactionStart,
+        private readonly string $transactionId,
     ) {
         parent::__construct();
     }

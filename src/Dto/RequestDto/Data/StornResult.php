@@ -12,7 +12,7 @@ class StornResult extends StornStart
         int $transactionId,
         string $serviceProviderTrxId,
         float $amount,
-        #[SerializedName('Storned')] private bool $storned,
+        #[SerializedName('Storned')] private readonly bool $storned,
     ) {
         parent::__construct($transactionId, $serviceProviderTrxId, $amount);
     }

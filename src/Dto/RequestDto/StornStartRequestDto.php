@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class StornStartRequestDto extends BaseRequestDto
 {
     public function __construct(
-        #[SerializedName('StornStart')] private StornStart $stornStart,
+        #[SerializedName('StornStart')] private readonly StornStart $stornStart,
         string $requestType,
         DateTimeInterface $dateTime,
         string $personalAccount,

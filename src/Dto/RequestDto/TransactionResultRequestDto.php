@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class TransactionResultRequestDto extends BaseRequestDto
 {
     public function __construct(
-        #[SerializedName('TransactionResult')] private TransactionResult $transactionResult,
+        #[SerializedName('TransactionResult')] private readonly TransactionResult $transactionResult,
         string $requestType,
         DateTimeInterface $dateTime,
         string $personalAccount,

@@ -10,7 +10,7 @@ use Sun\IPay\Contracts\IPayOrderInfoContract;
 class ServiceInfoXmlGenerator extends AbstractIPayXmlGenerator
 {
     public function __construct(
-        private IPayOrderInfoContract $orderInfo,
+        private readonly IPayOrderInfoContract $orderInfo,
     ) {
         parent::__construct();
     }

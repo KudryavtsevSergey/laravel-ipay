@@ -12,13 +12,13 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class BaseRequestDto implements RequestDtoInterface
 {
     public function __construct(
-        #[SerializedName('RequestType')] private string $requestType,
-        #[SerializedName('DateTime')] private DateTimeInterface $dateTime,
-        #[SerializedName('PersonalAccount')] private string $personalAccount,
-        #[SerializedName('Currency')] private int $currency,
-        #[SerializedName('RequestId')] private int $requestId,
-        #[SerializedName('ServiceNo')] private ?int $serviceNo = null,
-        #[SerializedName('Language')] private ?string $language = null,
+        #[SerializedName('RequestType')] private readonly string $requestType,
+        #[SerializedName('DateTime')] private readonly DateTimeInterface $dateTime,
+        #[SerializedName('PersonalAccount')] private readonly string $personalAccount,
+        #[SerializedName('Currency')] private readonly int $currency,
+        #[SerializedName('RequestId')] private readonly int $requestId,
+        #[SerializedName('ServiceNo')] private readonly ?int $serviceNo = null,
+        #[SerializedName('Language')] private readonly ?string $language = null,
     ) {
         IPayCurrencyEnum::checkAllowedValue($currency);
         LanguageEnum::checkAllowedValue($language, true);

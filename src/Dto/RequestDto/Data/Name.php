@@ -9,9 +9,9 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class Name
 {
     public function __construct(
-        #[SerializedName('Surname')] private ?string $surname = null,
-        #[SerializedName('FirstName')] private ?string $firstName = null,
-        #[SerializedName('Patronymic')] private ?string $patronymic = null,
+        #[SerializedName('Surname')] private readonly ?string $surname = null,
+        #[SerializedName('FirstName')] private readonly ?string $firstName = null,
+        #[SerializedName('Patronymic')] private readonly ?string $patronymic = null,
     ) {
     }
 

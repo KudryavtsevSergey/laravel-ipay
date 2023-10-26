@@ -11,8 +11,8 @@ use Sun\IPay\Mapper\ArrayObjectMapper;
 class RequestTypeFactory
 {
     public function __construct(
-        private IPayServiceContract $iPayService,
-        private ArrayObjectMapper $arrayObjectMapper,
+        private readonly IPayServiceContract $iPayService,
+        private readonly ArrayObjectMapper $arrayObjectMapper,
     ) {
     }
 

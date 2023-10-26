@@ -9,12 +9,12 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class TransactionStart extends ServiceInfo
 {
     public function __construct(
-        #[SerializedName('Amount')] private float $amount,
-        #[SerializedName('TransactionId')] private int $transactionId,
+        #[SerializedName('Amount')] private readonly float $amount,
+        #[SerializedName('TransactionId')] private readonly int $transactionId,
         int $agent,
-        #[SerializedName('AuthorizationType')] private string $authorizationType,
-        #[SerializedName('Name')] private ?Name $name,
-        #[SerializedName('Address')] private ?Address $address,
+        #[SerializedName('AuthorizationType')] private readonly string $authorizationType,
+        #[SerializedName('Name')] private readonly ?Name $name,
+        #[SerializedName('Address')] private readonly ?Address $address,
     ) {
         parent::__construct($agent);
     }

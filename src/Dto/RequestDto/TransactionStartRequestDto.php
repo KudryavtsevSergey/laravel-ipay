@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class TransactionStartRequestDto extends BaseRequestDto
 {
     public function __construct(
-        #[SerializedName('TransactionStart')] private TransactionStart $transactionStart,
+        #[SerializedName('TransactionStart')] private readonly TransactionStart $transactionStart,
         string $requestType,
         DateTimeInterface $dateTime,
         string $personalAccount,

@@ -26,9 +26,9 @@ class IPayController extends Controller
     private const XML_REQUEST_KEY = 'XML';
 
     public function __construct(
-        private SignatureService $signatureService,
-        private ArrayObjectMapper $arrayObjectMapper,
-        private RequestTypeFactory $requestTypeFactory,
+        private readonly SignatureService $signatureService,
+        private readonly ArrayObjectMapper $arrayObjectMapper,
+        private readonly RequestTypeFactory $requestTypeFactory,
     ) {
     }
 

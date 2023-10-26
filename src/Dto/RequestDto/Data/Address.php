@@ -9,11 +9,11 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class Address
 {
     public function __construct(
-        #[SerializedName('City')] private ?string $city = null,
-        #[SerializedName('Street')] private ?string $street = null,
-        #[SerializedName('House')] private ?string $house = null,
-        #[SerializedName('Building')] private ?string $building = null,
-        #[SerializedName('Apartment')] private ?string $apartment = null,
+        #[SerializedName('City')] private readonly ?string $city = null,
+        #[SerializedName('Street')] private readonly ?string $street = null,
+        #[SerializedName('House')] private readonly ?string $house = null,
+        #[SerializedName('Building')] private readonly ?string $building = null,
+        #[SerializedName('Apartment')] private readonly ?string $apartment = null,
     ) {
     }
 

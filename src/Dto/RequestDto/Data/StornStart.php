@@ -9,9 +9,9 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class StornStart
 {
     public function __construct(
-        #[SerializedName('TransactionId')] private int $transactionId,
-        #[SerializedName('ServiceProvider_TrxId')] private string $serviceProviderTrxId,
-        #[SerializedName('Amount')] private float $amount,
+        #[SerializedName('TransactionId')] private readonly int $transactionId,
+        #[SerializedName('ServiceProvider_TrxId')] private readonly string $serviceProviderTrxId,
+        #[SerializedName('Amount')] private readonly float $amount,
     ) {
     }
 

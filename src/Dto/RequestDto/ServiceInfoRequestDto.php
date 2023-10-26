@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class ServiceInfoRequestDto extends BaseRequestDto
 {
     public function __construct(
-        #[SerializedName('ServiceInfo')] private ServiceInfo $serviceInfo,
+        #[SerializedName('ServiceInfo')] private readonly ServiceInfo $serviceInfo,
         string $requestType,
         DateTimeInterface $dateTime,
         string $personalAccount,

@@ -9,7 +9,7 @@ use Sun\IPay\Dto\RequestDto\BaseRequestDto;
 class UnavailableStornErrorXmlGenerator extends AbstractErrorXmlGenerator
 {
     public function __construct(
-        private BaseRequestDto $request,
+        private readonly BaseRequestDto $request,
     ) {
         parent::__construct();
     }
